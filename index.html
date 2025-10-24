@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dino Coin Run</title>
+<style>
+body { font-family: Arial, sans-serif; text-align: center; margin:0; padding:0; }
+h1 { margin-top:20px; }
+button { padding: 10px 20px; margin: 10px; cursor:pointer; }
+.ad-slot { border: 2px dashed #999; margin: 10px auto; padding: 20px; width: 300px; color: #555; }
+#game-container { margin: 20px auto; width: 800px; height: 200px; background: #f0f0f0; position: relative; }
+input { padding: 5px; margin: 5px; }
+</style>
+</head>
+<body>
+
+<h1>Dino Coin Run</h1>
+<p>Username: <span id="username">Player1</span></p>
+
+<!-- Start Game Section -->
+<div id="start-section">
+  <button onclick="startGame()">Start Game</button>
+  <div class="ad-slot">Banner Ad 1</div>
+  <div class="ad-slot">Banner Ad 2</div>
+  <div class="ad-slot">Banner Ad 3</div>
+  <div class="ad-slot">Banner Ad 4</div>
+</div>
+
+<!-- Game Section -->
+<div id="game-section" style="display:none;">
+  <div id="game-container">
+    <canvas id="gameCanvas" width="800" height="200"></canvas>
+  </div>
+  <p>Coins: <span id="coinCount">0</span> | ₦: <span id="nairaValue">0</span></p>
+  <input type="text" id="bonusCode" placeholder="Enter bonus code">
+  <button onclick="applyCode()">Apply Code</button>
+  <div class="ad-slot">Banner Ad 1</div>
+  <div class="ad-slot">Banner Ad 2</div>
+  <div class="ad-slot">Banner Ad 3</div>
+  <div class="ad-slot">Banner Ad 4</div>
+  <button onclick="showWithdraw()">Withdraw</button>
+</div>
+
+<!-- Withdraw Section -->
+<div id="withdraw-section" style="display:none;">
+  <h2>Withdraw Coins</h2>
+  <form id="withdrawForm">
+    <input name="username" placeholder="Username" required />
+    <input name="account" placeholder="Account Number" required />
+    <input name="coins" id="coinValue" readonly />
+    <input name="naira" id="nairaValueSend" readonly />
+    <button type="submit">Send Request</button>
+  </form>
+  <div class="ad-slot">Banner Ad 1</div>
+  <div class="ad-slot">Banner Ad 2</div>
+  <div class="ad-slot">Banner Ad 3</div>
+  <div class="ad-slot">Banner Ad 4</div>
+  <div class="ad-slot">Banner Ad 5</div>
+  <div class="ad-slot">Banner Ad 6</div>
+</div>
+
+<script src="https://cdn.emailjs.com/sdk/3.11.0/email.min.js"></script>
+<script>
+emailjs.init("GKXW42FGuYnMYmZdi");
+
+let coins = 0, coinRate = 100;
+let canvas, ctx, dinoY=150, dinoV=0, gravity=0.6, isJumping=false, gameOver=false;
+let gameLoopId;
+
+function startGame() {
+  document.getElementById("start-section").style.display = "none";
+  document.getElementById("game-section").style.display = "block";
+
+  canvas = document.getElementById("gameCanvas");
+  ctx = canvas.getContext("2d");
+  coins = 0;
+  gameOver = false;
+  gameLoop();
+}
+
+function gameLoop() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle="black";
+  ctx.fillRect(50,dinoY,40,40); // Dino
+
+  if(!gameOver) {
+    coins += 1;
+    document.getElementById("coinCount").textContent = coins;
+    document.getElementById("nairaValue").textContent = "₦" + (coins/coinRate).toFixed(2);
+  }
+
+  if(isJumping){
+    dinoV -= gravity;
+    dinoY -= dinoV;
+    if(dinoY >= 150){ dinoY = 150; isJumping = false; dinoV = 0;}
+  }
+
+  gameLoopId = requestAnimationFrame(gameLoop);
+}
+
+document.addEventListener("keydown", (e)=>{
+  if(e.code==="Space" && !isJumping) { isJumping=true; dinoV=12; }
+});
+
+function applyCode(){
+  const code = document.getElementById("bonusCode").value.trim();
+  if(code==="1234abcdsam"){
+    coins += 20000;
+    document.getElementById("coinCount").textContent = coins;
+    document.getElementById("nairaValue").textContent = "₦" + (coins/coinRate).toFixed(2);
+    alert("Bonus code applied! +20000 coins");
+  } else alert("Invalid code");
+}
+
+function showWithdraw(){
+  cancelAnimationFrame(gameLoopId);
+  document.getElementById("game-section").style.display="none";
+  document.getElementById("withdraw-section").style.display="block";
+  document.getElementById("coinValue").value = coins;
+  document.getElementById("nairaValueSend").value = (coins/coinRate).toFixed(2);
+}
+
+document.getElementById("withdrawForm").addEventListener("submit",(e)=>{
+  e.preventDefault();
+  emailjs.send("service_zxly3v1","template_3fonxw5",{
+    username:e.target.username.value,
+    account:e.target.account.value,
+    coins:coins,
+    naira:(coins/coinRate).toFixed(2)
+  });
+  alert("Withdrawal request sent!");
+});
+</script>
+
+</body>
+</html>
