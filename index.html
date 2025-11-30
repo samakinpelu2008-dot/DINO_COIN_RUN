@@ -3,77 +3,357 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Portfolio</title>
+  <title>Football Simulation Platform</title>
   <style>
+    /* =======================
+       GLOBAL STYLES
+    ======================= */
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
-      background:#0a0a0f;
-      color:white;
-      margin:0;
-      padding:0;
+      background-color: #111;
+      color: #fff;
     }
-    header {
-      text-align:center;
-      padding:50px 0;
-      background:#4b0082;
+    a { color: #FFD700; text-decoration: none; }
+    header, footer { background-color: #222; padding: 15px; text-align: center; }
+    nav { display: flex; justify-content: center; gap: 20px; padding: 10px; background-color: #111; }
+    nav a:hover { color: #FFD700; }
+    .container { padding: 20px; max-width: 1200px; margin: auto; }
+    button { cursor: pointer; padding: 8px 16px; margin: 5px; border: none; border-radius: 5px; background-color: #FFD700; color: #111; }
+    button:hover { background-color: #FFA500; }
+
+    /* =======================
+       LEAGUE TABLE STYLES
+    ======================= */
+    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    th, td { padding: 10px; text-align: center; border: 1px solid #555; }
+    th { background-color: #222; color: #FFD700; }
+    
+    /* =======================
+       LIVE MATCH SIMULATION
+    ======================= */
+    #pitch {
+      width: 100%;
+      max-width: 800px;
+      height: 500px;
+      background-color: green;
+      margin: 20px auto;
+      position: relative;
+      border: 2px solid #fff;
     }
-    header h1 { margin:0; font-size:36px; color:white; }
-    header p { margin:5px 0 0; color:#ccc; font-size:18px; }
-    section { padding:20px; max-width:800px; margin:0 auto; }
-    h2 { color:#9b59b6; }
-    ul { list-style:none; padding:0; }
-    ul li { margin-bottom:10px; }
-    a { color:#9b59b6; text-decoration:none; }
-    .ad-container {
-      margin:20px 0;
-      text-align:center;
-      min-height:90px;
-      background:#111;
-      display:flex;
-      justify-content:center;
-      align-items:center;
+    .player-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      position: absolute;
     }
-    footer {
-      text-align:center;
-      padding:15px;
-      background:#111;
-      color:#9b59b6;
+    .ball {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: white;
+      position: absolute;
     }
+
+    /* =======================
+       BETTING / ODDS SECTION
+    ======================= */
+    .odds-section { background-color: #222; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+    .odds-section div { margin-bottom: 8px; }
+
+    /* =======================
+       POINT REQUEST SECTION
+    ======================= */
+    .points-request { background-color: #222; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+    input, select { padding: 5px; margin: 5px 0; width: 100%; border-radius: 5px; border: 1px solid #555; }
+
   </style>
 </head>
 <body>
 
+  <!-- =======================
+       HEADER
+  ======================= -->
   <header>
-    <h1>Your Name</h1>
-    <p>Web Developer | Designer | StoryVerse Creator</p>
+    <h1>Football Simulation Platform</h1>
   </header>
 
-  <section>
-    <h2>About Me</h2>
-    <p>Hello! I build apps, websites, and creative projects. This is a simple portfolio page to test ads.</p>
-    
-    <h2>Projects</h2>
-    <ul>
-      <li><a href="#">StoryVerse App</a></li>
-      <li><a href="#">Other Projects</a></li>
-    </ul>
+  <!-- =======================
+       NAVIGATION
+  ======================= -->
+  <nav>
+    <a href="#fixtures">Fixtures</a>
+    <a href="#live-match">Live Match</a>
+    <a href="#league-table">League Table</a>
+    <a href="#odds">Odds</a>
+    <a href="#points-request">Request Points</a>
+  </nav>
 
-    <div class="ad-container" id="ad-container">
-      <!-- 3nbf4 Ad will appear here -->
-    </div>
-  </section>
+  <div class="container">
 
-  <footer>Portfolio © 2025</footer>
+    <!-- =======================
+         FIXTURES SECTION
+    ======================= -->
+    <section id="fixtures">
+      <h2>Upcoming Fixtures</h2>
+      <div id="fixtures-list">
+        <!-- Each fixture will be displayed here -->
+      </div>
+    </section>
 
-  <!-- 3nbf4 Ad Script -->
+    <!-- =======================
+         LIVE MATCH SIMULATION
+    ======================= -->
+    <section id="live-match">
+      <h2>Live Match Simulation</h2>
+      <div id="pitch">
+        <!-- Player dots and ball will be rendered here -->
+      </div>
+      <button onclick="startSimulation()">Start Simulation</button>
+    </section>
+
+    <!-- =======================
+         LEAGUE TABLE
+    ======================= -->
+    <section id="league-table">
+      <h2>League Table</h2>
+      <table id="table">
+        <thead>
+          <tr>
+            <th>Team</th>
+            <th>Played</th>
+            <th>Won</th>
+            <th>Drawn</th>
+            <th>Lost</th>
+            <th>GF</th>
+            <th>GA</th>
+            <th>GD</th>
+            <th>Points</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Table rows will be injected here -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- =======================
+         ODDS SECTION
+    ======================= -->
+    <section id="odds">
+      <h2>Odds & Predictions</h2>
+      <div class="odds-section" id="odds-list">
+        <!-- Computer-generated odds will appear here -->
+      </div>
+    </section>
+
+    <!-- =======================
+         POINTS REQUEST SECTION
+    ======================= -->
+    <section id="points-request">
+      <h2>Request Points</h2>
+      <div class="points-request">
+        <input type="email" id="userEmail" placeholder="Enter your email" required>
+        <input type="number" id="pointsRequested" placeholder="Points to request" required>
+        <button onclick="requestPoints()">Send Request</button>
+      </div>
+      <div id="requestMessage"></div>
+    </section>
+
+  </div>
+
+  <footer>
+    <p>Football Simulation Platform &copy; 2025</p>
+  </footer>
+
+  <!-- =======================
+       SCRIPT (ALL LOGIC)
+  ======================= -->
   <script>
-    self.options = {
-      "domain": "3nbf4.com",
-      "zoneId": 10242700
+    // =======================
+    // PLACEHOLDERS FOR TEAM IMAGES
+    // =======================
+    const teamImages = {
+      "Team A": "PLACEHOLDER_IMAGE_LINK",
+      "Team B": "PLACEHOLDER_IMAGE_LINK",
+      "Team C": "PLACEHOLDER_IMAGE_LINK"
+      // Add more teams as needed
     };
-    self.lary = "";
-    importScripts('https://3nbf4.com/act/files/service-worker.min.js?r=sw');
-  </script>
 
+    // =======================
+    // SAMPLE DATA
+    // =======================
+    const teams = [
+      { name: "Team A", rating: 80 },
+      { name: "Team B", rating: 75 },
+      { name: "Team C", rating: 70 }
+    ];
+
+    const fixtures = [
+      { home: "Team A", away: "Team B", date: "2025-12-05" },
+      { home: "Team B", away: "Team C", date: "2025-12-06" }
+    ];
+
+    const leagueTable = [
+      { team: "Team A", played: 10, won: 7, drawn: 2, lost: 1, gf: 20, ga: 10, gd: 10, points: 23 },
+      { team: "Team B", played: 10, won: 5, drawn: 3, lost: 2, gf: 18, ga: 12, gd: 6, points: 18 },
+      { team: "Team C", played: 10, won: 2, drawn: 2, lost: 6, gf: 10, ga: 18, gd: -8, points: 8 }
+    ];
+
+    // =======================
+    // RENDER FIXTURES
+    // =======================
+    function renderFixtures() {
+      const container = document.getElementById("fixtures-list");
+      container.innerHTML = "";
+      fixtures.forEach(f => {
+        const div = document.createElement("div");
+        div.innerHTML = `<strong>${f.home}</strong> vs <strong>${f.away}</strong> - ${f.date}`;
+        container.appendChild(div);
+      });
+    }
+    renderFixtures();
+
+    // =======================
+    // RENDER LEAGUE TABLE
+    // =======================
+    function renderLeagueTable() {
+      const tbody = document.querySelector("#table tbody");
+      tbody.innerHTML = "";
+      leagueTable.forEach(team => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${team.team}</td>
+          <td>${team.played}</td>
+          <td>${team.won}</td>
+          <td>${team.drawn}</td>
+          <td>${team.lost}</td>
+          <td>${team.gf}</td>
+          <td>${team.ga}</td>
+          <td>${team.gd}</td>
+          <td>${team.points}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+    renderLeagueTable();
+
+    // =======================
+    // SIMULATION ENGINE
+    // =======================
+    const pitch = document.getElementById("pitch");
+    const playerDots = [];
+    let ball;
+
+    function createPlayers() {
+      pitch.innerHTML = "";
+      playerDots.length = 0;
+
+      // Create 11 home team dots (red)
+      for(let i=0;i<11;i++){
+        const dot = document.createElement("div");
+        dot.classList.add("player-dot");
+        dot.style.backgroundColor = "red";
+        dot.style.left = (50 + i*10) + "px";
+        dot.style.top = (50 + i*10) + "px";
+        pitch.appendChild(dot);
+        playerDots.push({el: dot, x: i*10+50, y: i*10+50, vx: 1, vy: 1});
+      }
+
+      // Create 11 away team dots (blue)
+      for(let i=0;i<11;i++){
+        const dot = document.createElement("div");
+        dot.classList.add("player-dot");
+        dot.style.backgroundColor = "blue";
+        dot.style.left = (400 + i*10) + "px";
+        dot.style.top = (50 + i*10) + "px";
+        pitch.appendChild(dot);
+        playerDots.push({el: dot, x: 400+i*10, y: 50+i*10, vx: -1, vy: 1});
+      }
+
+      // Create ball
+      ball = document.createElement("div");
+      ball.classList.add("ball");
+      ball.style.left = "200px";
+      ball.style.top = "250px";
+      pitch.appendChild(ball);
+      ball.x = 200;
+      ball.y = 250;
+      ball.vx = 2;
+      ball.vy = 1;
+    }
+
+    function simulateMovement() {
+      playerDots.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        if(p.x>pitch.offsetWidth-10 || p.x<0) p.vx*=-1;
+        if(p.y>pitch.offsetHeight-10 || p.y<0) p.vy*=-1;
+        p.el.style.left = p.x+"px";
+        p.el.style.top = p.y+"px";
+      });
+      ball.x += ball.vx;
+      ball.y += ball.vy;
+      if(ball.x>pitch.offsetWidth-8 || ball.x<0) ball.vx*=-1;
+      if(ball.y>pitch.offsetHeight-8 || ball.y<0) ball.vy*=-1;
+      ball.style.left = ball.x+"px";
+      ball.style.top = ball.y+"px";
+      requestAnimationFrame(simulateMovement);
+    }
+
+    function startSimulation(){
+      createPlayers();
+      simulateMovement();
+    }
+
+    // =======================
+    // ODDS GENERATOR
+    // =======================
+    function renderOdds(){
+      const container = document.getElementById("odds-list");
+      container.innerHTML = "";
+      fixtures.forEach(f => {
+        // simple odds logic based on team rating
+        const home = teams.find(t=>t.name===f.home)?.rating || 70;
+        const away = teams.find(t=>t.name===f.away)?.rating || 70;
+        const probHome = home/(home+away);
+        const probDraw = 0.2;
+        const probAway = away/(home+away);
+
+        const oddsHome = (1/probHome).toFixed(2);
+        const oddsDraw = (1/probDraw).toFixed(2);
+        const oddsAway = (1/probAway).toFixed(2);
+
+        const div = document.createElement("div");
+        div.innerHTML = `
+          <strong>${f.home}</strong> vs <strong>${f.away}</strong>
+          <div>1: ${oddsHome} | X: ${oddsDraw} | 2: ${oddsAway}</div>
+        `;
+        container.appendChild(div);
+      });
+    }
+    renderOdds();
+
+    // =======================
+    // POINT REQUEST EMAIL (FAKE EMAIL LOGIC)
+    // =======================
+    function requestPoints(){
+      const email = document.getElementById("userEmail").value;
+      const points = document.getElementById("pointsRequested").value;
+      if(!email || !points){
+        alert("Please fill all fields!");
+        return;
+      }
+      // Simulate email sending
+      console.log(`Email sent to admin:
+      User: ${email}
+      Points Requested: ${points}
+      `);
+      document.getElementById("requestMessage").innerText = "Request sent successfully!";
+      document.getElementById("userEmail").value = "";
+      document.getElementById("pointsRequested").value = "";
+    }
+
+  </script>
 </body>
 </html>
