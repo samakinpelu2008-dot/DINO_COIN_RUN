@@ -103,7 +103,7 @@
 <div id="step2" class="page">
   <div class="content">
     <h2>Enter Your Details</h2>
-    <input type="text" id="phone" placeholder="Phone number (numeric only)">
+    <input type="text" id="phone" placeholder="Phone number (or anything)">
     <select id="network">
       <option value="">Select Network</option>
       <option value="Glo">Glo</option>
@@ -137,15 +137,15 @@
     document.getElementById('step' + step).classList.add('active');
   }
 
-  // Enable continue in Step 2 only if valid
+  // Step 2: Enable continue only if fields are filled
   const phoneInput = document.getElementById('phone');
   const networkSelect = document.getElementById('network');
   const continueBtn2 = document.getElementById('continueStep2');
 
   function validateStep2() {
-    const phoneValid = /^\d{6,15}$/.test(phoneInput.value);
-    const networkValid = networkSelect.value !== "";
-    continueBtn2.disabled = !(phoneValid && networkValid);
+    const phoneFilled = phoneInput.value.trim() !== "";
+    const networkSelected = networkSelect.value !== "";
+    continueBtn2.disabled = !(phoneFilled && networkSelected);
   }
 
   phoneInput.addEventListener('input', validateStep2);
@@ -155,16 +155,17 @@
   let sharesCompleted = 0;
   const progressBar = document.getElementById('progressBar');
   const getItBtn = document.getElementById('getItBtn');
+  const shareBtn = document.querySelector('.share-btn');
   const githubLink = "https://samakinpelu2008-dot.github.io/ORIAN_FREE_5GB/";
-  
+
   function shareWhatsApp() {
-    // Open WhatsApp share
+    if (sharesCompleted >= 4) return;
+
     const message = encodeURIComponent(
       "It's Christmas and Orion Organizations are giving out 5GB free! Benefit now:\n" + githubLink
     );
     window.open("https://api.whatsapp.com/send?text=" + message, "_blank");
 
-    // Simulate user returning from WhatsApp (for demo, just increment on click)
     sharesCompleted++;
     const progressPercent = sharesCompleted * 25;
     progressBar.style.width = progressPercent + "%";
@@ -172,11 +173,12 @@
 
     if (sharesCompleted >= 4) {
       getItBtn.style.display = "inline-block";
+      shareBtn.style.display = "none"; // Hide share button
     }
   }
 
   function getIt() {
-    window.location.href = 'https://obvioussecretive.com/rwj2iaik6g?key=d39bd78c2ae2358792721a701a778ba9';
+    window.location.href = githubLink;
   }
 </script>
 
