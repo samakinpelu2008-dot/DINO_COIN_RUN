@@ -1,70 +1,186 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ads + Random Names App</title>
+<meta charset="UTF-8">
+<title>AI News Hub - Ultimate</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<style>
+body{font-family:sans-serif;background:#f5f5f5;margin:0;padding:0;}
+nav{background:#003366;color:#fff;padding:10px;}
+nav a{color:#fff;margin-right:15px;text-decoration:none;font-weight:bold;}
+header, main, footer{padding:10px;}
+.news-card{background:#fff;padding:15px;margin-bottom:15px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,0.1);}
+.news-card img{width:100%;height:auto;border-radius:5px;}
+.ad-slot{margin:15px 0;text-align:center;}
+#search-bar{width:100%;padding:8px;margin-bottom:10px;border-radius:5px;border:1px solid #ccc;}
+.btn-suggestion{margin:2px;}
+</style>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background: #f7f7f7;
-    }
-    h2, h3 {
-      margin-bottom: 10px;
-    }
-    ul {
-      background: white;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      list-style: none;
-    }
-    ul li {
-      padding: 6px 0;
-      border-bottom: 1px solid #eee;
-    }
-    ul li:last-child {
-      border-bottom: none;
-    }
-  </style>
+<!-- AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9905309315543268"
+     crossorigin="anonymous"></script>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBEOlLBZvTRxjzxBal9HstvnU2121TXzJg",
+  authDomain: "storyverse-2dd65.firebaseapp.com",
+  projectId: "storyverse-2dd65",
+  storageBucket: "storyverse-2dd65.firebasestorage.app",
+  messagingSenderId: "547979964176",
+  appId: "1:547979964176:web:c4b54dce44caee07ab3f95"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+</script>
 </head>
-
 <body>
-  <h2>Ad + Random Names</h2>
 
-  <!-- Google AdSense Code -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9905309315543268" crossorigin="anonymous"></script>
-  <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-9905309315543268" data-ad-slot="9547507907" data-ad-format="auto" data-full-width-responsive="true"></ins>
-  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+<header>
+<nav>
+<a href="?page=home">HOME</a>
+<a href="?page=world">WORLD</a>
+<a href="?page=nigeria">NIGERIA</a>
+<a href="?page=sports">SPORTS</a>
+<a href="?page=entertainment">ENTERTAINMENT</a>
+<a href="?page=crime">CRIME</a>
+<a href="?page=search">SEARCH</a>
+<a href="?page=settings">SETTINGS</a>
+</nav>
+</header>
 
-  <h3>10 Random Names</h3>
-  <ul id="nameList"></ul>
+<main id="main-container" class="container mt-3"></main>
 
-  <script>
-    const names = [
-      "Samuel", "Daniel", "Joy", "Precious", "Michael", "James", "Blessing", 
-      "David", "Favour", "Sarah", "Emmanuel", "Chisom", "Jordan", "Kelvin", 
-      "Ruth", "Gift", "Queen", "John", "Mary", "Deborah"
-    ];
+<script type="module">
 
-    function generateRandomNames() {
-      let shuffled = names.sort(() => 0.5 - Math.random());
-      let selected = shuffled.slice(0, 10);
+const OPENAI_KEY = "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";
+const container = document.getElementById("main-container");
 
-      const list = document.getElementById("nameList");
-      list.innerHTML = "";
+// Utility: create AdSense block
+function createAdSlot(slotId="YOUR_SLOT_ID"){
+  const div = document.createElement("div");
+  div.className="ad-slot";
+  div.innerHTML=`
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-9905309315543268"
+         data-ad-slot="${slotId}"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});<\/script>
+  `;
+  return div;
+}
 
-      selected.forEach(n => {
-        const li = document.createElement("li");
-        li.textContent = n;
-        list.appendChild(li);
-      });
-    }
+// Detect page from URL
+const params = new URLSearchParams(window.location.search);
+const page = params.get("page") || "home";
 
-    generateRandomNames();
-  </script>
+// ----------------------
+// SEARCH PAGE
+// ----------------------
+if(page==="search"){
+  container.innerHTML=`
+    <h2>Search News</h2>
+    <input id="search-bar" placeholder="Type keyword..." />
+    <div id="suggestions" class="mb-2"></div>
+    <div id="search-results"></div>
+  `;
+  const suggestions=["Motivation","Tech","Business","Health","Science","Education","Global Trends","Breaking News"];
+  const sugDiv=document.getElementById("suggestions");
+  suggestions.forEach(s=>{
+    const btn=document.createElement("button");
+    btn.className="btn btn-primary btn-suggestion";
+    btn.innerText=s;
+    btn.onclick=()=>{loadNews(s.toLowerCase())};
+    sugDiv.appendChild(btn);
+  });
+  document.getElementById("search-bar").addEventListener("keyup",(e)=>{
+    loadNews(e.target.value.toLowerCase());
+  });
+}
 
+// ----------------------
+// SETTINGS PAGE
+// ----------------------
+else if(page==="settings"){
+  container.innerHTML=`<h2>Settings & Preferences</h2><p>Toggle sections to show/hide:</p>`;
+  const sections=["Home","World","Nigeria","Sports","Entertainment","Crime","Life Goals"];
+  sections.forEach(s=>{
+    const label=document.createElement("label");
+    label.innerHTML=`<input type="checkbox" checked data-section="${s}"> ${s} <br>`;
+    container.appendChild(label);
+  });
+}
+
+// ----------------------
+// HOME / CATEGORY / DEFAULT
+// ----------------------
+else{
+  loadNews(page==="home"?null:page);
+}
+
+// ----------------------
+// Fetch AI News / Life Goals
+// ----------------------
+async function loadNews(category=null){
+  container.innerHTML="<p>Loading news...</p>";
+  try{
+    const prompt = category 
+      ? `Fetch latest ${category} news in JSON array format with fields: title, summary, image_url, source, category`
+      : `Fetch latest general news in JSON array format with fields: title, summary, image_url, source, category`;
+    
+    const res = await fetch("https://api.openai.com/v1/chat/completions",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "Authorization": `Bearer ${OPENAI_KEY}`
+      },
+      body: JSON.stringify({model:"gpt-4", messages:[{role:"system",content:prompt}], max_tokens:1500})
+    });
+    const data = await res.json();
+    const newsItems = JSON.parse(data.choices[0].message.content);
+    container.innerHTML="";
+    newsItems.forEach(item=>{
+      const card=document.createElement("div");
+      card.className="news-card";
+      card.innerHTML=`<img src="${item.image_url}" alt="news"><h2>${item.title}</h2><p>${item.summary}</p>`;
+      card.appendChild(createAdSlot("1234567890"));
+      container.appendChild(card);
+    });
+
+    // Fetch motivational life goals
+    const lifeRes = await fetch("https://api.openai.com/v1/chat/completions",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "Authorization": `Bearer ${OPENAI_KEY}`
+      },
+      body: JSON.stringify({
+        model:"gpt-4",
+        messages:[{role:"system",content:"Generate 5 motivational life goals in JSON format with fields: text, image_url"}],
+        max_tokens:500
+      })
+    });
+    const lifeData = await lifeRes.json();
+    const goals = JSON.parse(lifeData.choices[0].message.content);
+    goals.forEach(goal=>{
+      const card=document.createElement("div");
+      card.className="news-card";
+      card.innerHTML=`<img src="${goal.image_url}" alt="life"><p>${goal.text}</p>`;
+      card.appendChild(createAdSlot("1234567891"));
+      container.appendChild(card);
+    });
+
+  } catch(e){
+    container.innerHTML="<p>Failed to load content. Try again later.</p>";
+    console.error(e);
+  }
+}
+
+</script>
 </body>
 </html>
