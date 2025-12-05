@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Get Your Free 1GB</title>
+<title>Orion Free 5GB</title>
 <style>
   body, html {
     margin: 0;
@@ -11,11 +11,14 @@
     font-family: Arial, sans-serif;
     height: 100%;
     text-align: center;
+    background-color: #f9f9f9;
   }
 
   .page {
     display: none;
-    height: 100vh;
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
   }
 
   .active {
@@ -29,75 +32,151 @@
   }
 
   .content {
-    height: 67vh;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    padding: 20px;
   }
 
-  button, .share-btn {
-    padding: 15px 30px;
-    font-size: 18px;
+  h2 {
+    margin-bottom: 20px;
+  }
+
+  button, select, input {
+    padding: 12px 20px;
     margin: 10px;
+    font-size: 16px;
     cursor: pointer;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+
+  button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
   }
 
   .share-btn {
     background-color: #25D366; /* WhatsApp green */
     color: white;
     border: none;
-    border-radius: 5px;
     text-decoration: none;
+    display: inline-block;
+  }
+
+  .progress-container {
+    width: 80%;
+    background-color: #ddd;
+    border-radius: 20px;
+    margin: 20px 0;
+  }
+
+  .progress-bar {
+    width: 0%;
+    height: 20px;
+    background-color: #4CAF50;
+    border-radius: 20px;
+    text-align: center;
+    color: white;
+    line-height: 20px;
   }
 </style>
 </head>
 <body>
 
-<!-- Step 1 -->
+<!-- Step 1: Landing -->
 <div id="step1" class="page active">
   <img src="https://i.ibb.co/QFC3FR9z/images-15.jpg" alt="Landing Image">
   <div class="content">
+    <p style="font-size: 18px; margin-bottom: 15px;">
+      It's Christmas and the Orion Organizations are giving students <strong>5GB</strong> for free
+      so that they can have a better Christmas experience.
+    </p>
+    <h2 style="font-size: 24px; margin-bottom: 20px; color: #E53935;">
+      Get your <strong>5GB free</strong>
+    </h2>
     <button onclick="nextStep(2)">Get it now ↓</button>
   </div>
 </div>
 
-<!-- Step 2 -->
+<!-- Step 2: Phone + Network -->
 <div id="step2" class="page">
   <div class="content">
-    <h2>Share to Continue</h2>
-    <p>It is advisable to share with other users; it might not work if you don’t.</p>
-    <a href="https://api.whatsapp.com/send?text=Check%20out%20this%20amazing%20site%20and%20get%201GB!" 
-       target="_blank" class="share-btn" onclick="showContinue()">Share on WhatsApp</a>
-    <br>
-    <button id="continueBtn" onclick="nextStep(3)" style="display:none;">Continue</button>
+    <h2>Enter Your Details</h2>
+    <input type="text" id="phone" placeholder="Phone number (numeric only)">
+    <select id="network">
+      <option value="">Select Network</option>
+      <option value="Glo">Glo</option>
+      <option value="MTN">MTN</option>
+      <option value="9Mobile">9Mobile</option>
+      <option value="Airtel">Airtel</option>
+    </select>
+    <button id="continueStep2" disabled onclick="nextStep(3)">Continue</button>
   </div>
 </div>
 
-<!-- Step 3 -->
+<!-- Step 3: Sharing -->
 <div id="step3" class="page">
   <div class="content">
-    <h2>Redirecting...</h2>
-    <p>Taking you to other websites...</p>
+    <h2>Share to 4 WhatsApp Groups</h2>
+    <p>Share to WhatsApp groups to unlock your 5GB.</p>
+    
+    <div class="progress-container">
+      <div id="progressBar" class="progress-bar">0%</div>
+    </div>
+    
+    <button class="share-btn" onclick="shareWhatsApp()">Share on WhatsApp</button>
+    <button id="getItBtn" style="display:none;" onclick="getIt()">Get it</button>
   </div>
 </div>
 
 <script>
+  // Step navigation
   function nextStep(step) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('step' + step).classList.add('active');
+  }
 
-    if (step === 3) {
-      // Replace with your actual URLs
-      setTimeout(() => {
-        window.location.href = 'https://obvioussecretive.com/rwj2iaik6g?key=d39bd78c2ae2358792721a701a778ba9';
-      }, 2000); // 2 seconds before redirect
+  // Enable continue in Step 2 only if valid
+  const phoneInput = document.getElementById('phone');
+  const networkSelect = document.getElementById('network');
+  const continueBtn2 = document.getElementById('continueStep2');
+
+  function validateStep2() {
+    const phoneValid = /^\d{6,15}$/.test(phoneInput.value);
+    const networkValid = networkSelect.value !== "";
+    continueBtn2.disabled = !(phoneValid && networkValid);
+  }
+
+  phoneInput.addEventListener('input', validateStep2);
+  networkSelect.addEventListener('change', validateStep2);
+
+  // Step 3: Sharing
+  let sharesCompleted = 0;
+  const progressBar = document.getElementById('progressBar');
+  const getItBtn = document.getElementById('getItBtn');
+  const githubLink = "https://samakinpelu2008-dot.github.io/ORIAN_FREE_5GB/";
+  
+  function shareWhatsApp() {
+    // Open WhatsApp share
+    const message = encodeURIComponent(
+      "It's Christmas and Orion Organizations are giving out 5GB free! Benefit now:\n" + githubLink
+    );
+    window.open("https://api.whatsapp.com/send?text=" + message, "_blank");
+
+    // Simulate user returning from WhatsApp (for demo, just increment on click)
+    sharesCompleted++;
+    const progressPercent = sharesCompleted * 25;
+    progressBar.style.width = progressPercent + "%";
+    progressBar.textContent = progressPercent + "%";
+
+    if (sharesCompleted >= 4) {
+      getItBtn.style.display = "inline-block";
     }
   }
 
-  function showContinue() {
-    document.getElementById('continueBtn').style.display = 'inline-block';
+  function getIt() {
+    window.location.href = githubLink;
   }
 </script>
 
