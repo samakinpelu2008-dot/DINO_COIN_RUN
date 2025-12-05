@@ -2,14 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>AI News Hub - Ultimate</title>
+<title>Ultimate AI News Hub</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 <style>
 body{font-family:sans-serif;background:#f5f5f5;margin:0;padding:0;}
 nav{background:#003366;color:#fff;padding:10px;}
 nav a{color:#fff;margin-right:15px;text-decoration:none;font-weight:bold;}
-header, main, footer{padding:10px;}
 .news-card{background:#fff;padding:15px;margin-bottom:15px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,0.1);}
 .news-card img{width:100%;height:auto;border-radius:5px;}
 .ad-slot{margin:15px 0;text-align:center;}
@@ -20,28 +19,9 @@ header, main, footer{padding:10px;}
 <!-- AdSense -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9905309315543268"
      crossorigin="anonymous"></script>
-
-<!-- Firebase -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBEOlLBZvTRxjzxBal9HstvnU2121TXzJg",
-  authDomain: "storyverse-2dd65.firebaseapp.com",
-  projectId: "storyverse-2dd65",
-  storageBucket: "storyverse-2dd65.firebasestorage.app",
-  messagingSenderId: "547979964176",
-  appId: "1:547979964176:web:c4b54dce44caee07ab3f95"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-</script>
 </head>
 <body>
 
-<header>
 <nav>
 <a href="?page=home">HOME</a>
 <a href="?page=world">WORLD</a>
@@ -52,32 +32,28 @@ const db = getFirestore(app);
 <a href="?page=search">SEARCH</a>
 <a href="?page=settings">SETTINGS</a>
 </nav>
-</header>
 
 <main id="main-container" class="container mt-3"></main>
 
-<script type="module">
-
-const OPENAI_KEY = "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";
+<script>
 const container = document.getElementById("main-container");
+const params = new URLSearchParams(window.location.search);
+const page = params.get("page") || "home";
 
-// Utility: create AdSense block
-function createAdSlot(slotId="YOUR_SLOT_ID"){
-  const div = document.createElement("div");
+// Your deployed Vercel backend
+const BACKEND_URL = "https://dino-coin-run-delta.vercel.app/api/news";
+
+// Helper to create AdSense slot
+function createAdSlot(slotId="1234567890"){
+  const div=document.createElement("div");
   div.className="ad-slot";
-  div.innerHTML=`
-    <ins class="adsbygoogle"
+  div.innerHTML=`<ins class="adsbygoogle"
          style="display:block"
          data-ad-client="ca-pub-9905309315543268"
          data-ad-slot="${slotId}"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});<\/script>
-  `;
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});<\/script>`;
   return div;
 }
-
-// Detect page from URL
-const params = new URLSearchParams(window.location.search);
-const page = params.get("page") || "home";
 
 // ----------------------
 // SEARCH PAGE
@@ -124,54 +100,38 @@ else{
 }
 
 // ----------------------
-// Fetch AI News / Life Goals
+// Fetch AI News / Life Goals from backend
 // ----------------------
 async function loadNews(category=null){
   container.innerHTML="<p>Loading news...</p>";
   try{
-    const prompt = category 
-      ? `Fetch latest ${category} news in JSON array format with fields: title, summary, image_url, source, category`
-      : `Fetch latest general news in JSON array format with fields: title, summary, image_url, source, category`;
-    
-    const res = await fetch("https://api.openai.com/v1/chat/completions",{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        "Authorization": `Bearer ${OPENAI_KEY}`
-      },
-      body: JSON.stringify({model:"gpt-4", messages:[{role:"system",content:prompt}], max_tokens:1500})
-    });
-    const data = await res.json();
-    const newsItems = JSON.parse(data.choices[0].message.content);
+    const url=new URL(BACKEND_URL);
+    if(category) url.searchParams.append("category", category);
+    const res=await fetch(url);
+    const newsItems=await res.json();
+
     container.innerHTML="";
     newsItems.forEach(item=>{
       const card=document.createElement("div");
       card.className="news-card";
       card.innerHTML=`<img src="${item.image_url}" alt="news"><h2>${item.title}</h2><p>${item.summary}</p>`;
-      card.appendChild(createAdSlot("1234567890"));
+      card.appendChild(createAdSlot());
       container.appendChild(card);
     });
 
-    // Fetch motivational life goals
-    const lifeRes = await fetch("https://api.openai.com/v1/chat/completions",{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        "Authorization": `Bearer ${OPENAI_KEY}`
-      },
-      body: JSON.stringify({
-        model:"gpt-4",
-        messages:[{role:"system",content:"Generate 5 motivational life goals in JSON format with fields: text, image_url"}],
-        max_tokens:500
-      })
-    });
-    const lifeData = await lifeRes.json();
-    const goals = JSON.parse(lifeData.choices[0].message.content);
-    goals.forEach(goal=>{
+    // Optional: Life goals placeholder
+    const lifeGoals=[ 
+      {text:"Learn something new every day", image_url:"https://via.placeholder.com/400x200?text=Goal+1"},
+      {text:"Stay healthy and exercise", image_url:"https://via.placeholder.com/400x200?text=Goal+2"},
+      {text:"Save and invest wisely", image_url:"https://via.placeholder.com/400x200?text=Goal+3"},
+      {text:"Read books regularly", image_url:"https://via.placeholder.com/400x200?text=Goal+4"},
+      {text:"Help others and give back", image_url:"https://via.placeholder.com/400x200?text=Goal+5"},
+    ];
+    lifeGoals.forEach(goal=>{
       const card=document.createElement("div");
       card.className="news-card";
       card.innerHTML=`<img src="${goal.image_url}" alt="life"><p>${goal.text}</p>`;
-      card.appendChild(createAdSlot("1234567891"));
+      card.appendChild(createAdSlot());
       container.appendChild(card);
     });
 
@@ -180,7 +140,7 @@ async function loadNews(category=null){
     console.error(e);
   }
 }
-
 </script>
+
 </body>
 </html>
